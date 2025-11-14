@@ -11,7 +11,7 @@ This guide provides detailed instructions for installing the Forensic Toolbox on
 ## Quick Installation (Linux/Mac)
 ```bash
 # 1. Clone the repository
-git clone https://github.com/yourusername/forensic-toolbox.git
+git clone https://github.com/Prof-GP/forensic-toolbox.git
 cd forensic-toolbox
 
 # 2. Run make install (creates venv and installs everything)
@@ -27,7 +27,7 @@ forensic-toolbox --version
 ## Quick Installation (Windows)
 ```cmd
 # 1. Clone the repository
-git clone https://github.com/yourusername/forensic-toolbox.git
+git clone https://github.com/Prof-GP/forensic-toolbox.git
 cd forensic-toolbox
 
 # 2. Create virtual environment
@@ -49,7 +49,7 @@ forensic-toolbox --version
 
 **Option A: Using Git**
 ```bash
-git clone https://github.com/yourusername/forensic-toolbox.git
+git clone https://github.com/Prof-GP/forensic-toolbox.git
 cd forensic-toolbox
 ```
 

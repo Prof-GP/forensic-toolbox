@@ -22,7 +22,7 @@ A comprehensive Python toolkit for parsing Windows forensic artifacts including 
 ### Quick Install (Recommended)
 ```bash
 # Clone the repository
-git clone https://github.com/ProfGP/forensic-toolbox.git
+git clone https://github.com/Prof-GP/forensic-toolbox.git
 cd forensic-toolbox
 
 # Create virtual environment and install
@@ -231,7 +231,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Author
 
-ProfGP - practical4n6@gmail.com
+Prof-GP - practical4n6@gmail.com
 
 ## Acknowledgments
 
@@ -242,4 +242,4 @@ ProfGP - practical4n6@gmail.com
 ## Support
 
 For issues, questions, or contributions, please visit:
-https://github.com/ProfGP/forensic-toolbox/issues
+https://github.com/Prof-GP/forensic-toolbox/issues

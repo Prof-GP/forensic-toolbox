@@ -1,0 +1,110 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "forensic-toolbox"
+version = "1.0.0"
+description = "Windows Forensic Artifacts Parser - Registry, Prefetch, and LNK analysis"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "MIT"}
+authors = [
+    {name = "ProfGP", email = "practical4n6@gmail.com"}
+]
+maintainers = [
+    {name = "ProfGP", email = "practical4n6@gmail.com"}
+]
+keywords = [
+    "forensics",
+    "digital-forensics",
+    "windows",
+    "registry",
+    "prefetch",
+    "lnk",
+    "dfir"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Legal Industry",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: System :: Forensics",
+]
+
+dependencies = [
+    "python-registry>=1.3.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=23.0",
+    "flake8>=6.0",
+    "mypy>=1.0",
+]
+
+prefetch = [
+    "pyxpress>=0.1.0",
+]
+
+all = [
+    "pyxpress>=0.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/ProfGP/forensic-toolbox"
+Documentation = "https://github.com/ProfGP/forensic-toolbox#readme"
+Repository = "https://github.com/ProfGP/forensic-toolbox.git"
+"Bug Tracker" = "https://github.com/ProfGP/forensic-toolbox/issues"
+
+[project.scripts]
+forensic-toolbox = "main:main"
+ftb = "main:main"
+
+[tool.setuptools]
+packages = ["Toolbox"]
+
+[tool.setuptools.package-data]
+Toolbox = ["*.py"]
+
+[tool.black]
+line-length = 100
+target-version = ['py37', 'py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "--cov=Toolbox --cov-report=html --cov-report=term-missing"
+
+[tool.mypy]
+python_version = "3.7"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false

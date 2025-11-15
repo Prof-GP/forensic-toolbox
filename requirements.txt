@@ -1,5 +1,6 @@
 # Core dependencies
 python-registry>=1.3.1
+python-evtx>=0.8.0
 
 # Optional: For Windows 10+ compressed prefetch files
 # Uncomment if you need to parse compressed prefetch files

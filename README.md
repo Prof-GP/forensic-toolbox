@@ -16,6 +16,11 @@ A comprehensive Python toolkit for parsing Windows forensic artifacts including 
   - Extracts target information, timestamps, volume data
   - Decodes extra data blocks (TrackerData, ConsoleData, etc.)
   - Identifies potential MAC addresses in GUIDs
+- **EVTX Parsing**: Parses evtx logs from C:\Windows\System32\winevt\Logs
+  - Looks all the commonly used Event IDs
+  - Can individually parse powershell logs to see commands
+  - Add your own Event IDs to Mappings or pass in command line
+  - Output to Json and CSV
 
 ## Installation
 
@@ -74,6 +79,9 @@ forensic-toolbox file1.lnk file2.pf NTUSER.DAT
 
 # Enable verbose output
 forensic-toolbox evidence.lnk --verbose
+
+forensic-toolbox Security.evtx --evtx-event 4688
+forensic-toolbox C:\Logs 
 ```
 
 ### Short Command
@@ -126,6 +134,12 @@ lnk = ToolboxLnk('shortcut.lnk')
 - Network share information
 - Extra data blocks (console properties, tracker data, etc.)
 
+### Windows Event Logs (.evtx)
+- Individual Log parsing with Event IDs
+- Separate Event ID mappings for Easy additions
+- Parse entire Logs directory and provides outputs
+- Look for Event ID via specfic dates
+
 ## Development
 
 ### Running Tests
@@ -156,8 +170,10 @@ forensic-toolbox/
 │   ├── toolbox_registry.py      # Registry hive parser
 │   ├── toolbox_prefetch.py      # Prefetch file parser
 │   └── toolbox_lnk.py           # LNK file parser
+│   └── toolbox_evtx.py           # Evtx parser
 ├── main.py                       # Main entry point
 ├── registry_mapping.py           # Forensic registry keys configuration
+├── evtx_mapping.py               # Forensic event id configuration
 ├── pyproject.toml               # Package configuration
 ├── requirements.txt             # Dependencies
 ├── Makefile                     # Build automation
@@ -168,6 +184,7 @@ forensic-toolbox/
 - Python 3.7+
 - python-registry>=1.3.1
 - pyxpress>=0.1.0 (optional, for compressed prefetch files)
+- python-evtx>=0.8.0
 
 ## Use Cases
 
@@ -220,6 +237,17 @@ Output includes:
 - Volume serial number
 - Network share information
 - MAC address (if present in tracker data)
+
+### Parse EVTX File
+```bash
+forensic-toolbox "Security.evtx"
+```
+
+Output includes:
+- Processing Event Count
+- Extracted Events
+- Event Information for Analysis
+- Information if Event Count to large
 
 ## License
 

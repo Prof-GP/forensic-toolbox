@@ -10,10 +10,10 @@ readme = "README.md"
 requires-python = ">=3.7"
 license = {text = "MIT"}
 authors = [
-    {name = "ProfGP", email = "practical4n6@gmail.com"}
+    {name = "Prof-GP", email = "practical4n6@gmail.com"}
 ]
 maintainers = [
-    {name = "ProfGP", email = "practical4n6@gmail.com"}
+    {name = "Prof-GP", email = "practical4n6@gmail.com"}
 ]
 keywords = [
     "forensics",
@@ -58,15 +58,20 @@ prefetch = [
     "pyxpress>=0.1.0",
 ]
 
+evtx = [
+    "python-evtx>=0.8.0",
+]
+
 all = [
     "pyxpress>=0.1.0",
+    "python-evtx>=0.8.0",
 ]
 
 [project.urls]
-Homepage = "https://github.com/ProfGP/forensic-toolbox"
-Documentation = "https://github.com/ProfGP/forensic-toolbox#readme"
-Repository = "https://github.com/ProfGP/forensic-toolbox.git"
-"Bug Tracker" = "https://github.com/ProfGP/forensic-toolbox/issues"
+Homepage = "https://github.com/Prof-GP/forensic-toolbox"
+Documentation = "https://github.com/Prof-GP/forensic-toolbox#readme"
+Repository = "https://github.com/Prof-GP/forensic-toolbox.git"
+"Bug Tracker" = "https://github.com/Prof-GP/forensic-toolbox/issues"
 
 [project.scripts]
 forensic-toolbox = "main:main"

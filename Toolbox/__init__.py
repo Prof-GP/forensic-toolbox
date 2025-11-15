@@ -14,9 +14,11 @@ __email__ = "practical4n6@gmail.com"
 from .toolbox_registry import ToolboxRegistry
 from .toolbox_prefetch import ToolboxPrefetch
 from .toolbox_lnk import ToolboxLnk
+from .toolbox_evtx import ToolboxEvtx
 
 __all__ = [
     'ToolboxRegistry',
     'ToolboxPrefetch',
     'ToolboxLnk',
+    'ToolboxEvtx'
 ]

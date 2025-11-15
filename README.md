@@ -164,6 +164,7 @@ make check
 
 ## Project Structure
 
+```bash
 forensic-toolbox/
 ├── Toolbox/
 │   ├── init.py
@@ -178,6 +179,7 @@ forensic-toolbox/
 ├── requirements.txt             # Dependencies
 ├── Makefile                     # Build automation
 └── README.md                    # This file
+```
 
 ## Requirements
 

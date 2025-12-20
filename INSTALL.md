@@ -122,22 +122,50 @@ You should see: `Forensic Toolbox v1.0.0`
 ## Installation Options
 
 ### Option 1: Basic Installation
-Installs only core dependencies (python-registry)
+Installs only core dependencies (python-registry, python-evtx)
 ```bash
 pip install -e .
 ```
 
 ### Option 2: Full Installation
-Includes support for compressed prefetch files (Windows 10+)
+Includes support for compressed prefetch files (Windows 10+) and memory analysis (Volatility 3)
 ```bash
 pip install -e ".[all]"
 ```
 
-### Option 3: Development Installation
+### Option 3: Memory Analysis Only
+Install Volatility 3 for memory dump analysis
+```bash
+pip install volatility3
+```
+
+### Option 4: Development Installation
 Includes testing and development tools
 ```bash
 pip install -e ".[dev]"
 ```
+
+## Optional Features
+
+### Memory Analysis with Volatility 3
+
+To enable memory dump analysis, install Volatility 3:
+
+```bash
+# Install Volatility 3
+pip install volatility3
+
+# Or install with the 'all' extras
+pip install -e ".[all]"
+```
+
+**Note:** On first use, Volatility 3 will automatically download symbol tables for the OS you're analyzing. This may take a few moments.
+
+**Supported memory dump formats:**
+- .raw, .mem, .dmp (raw memory dumps)
+- .vmem (VMware snapshots - recommended)
+- .lime (LiME format for Linux)
+- And other common formats
 
 ## Using Makefile (Linux/Mac/WSL)
 
@@ -179,12 +207,16 @@ forensic-toolbox/
 │   ├── Scripts/             # Executables (Windows)
 │   └── lib/                 # Installed packages
 ├── Toolbox/                 # Source code
-│   ├── init.py
+│   ├── __init__.py
 │   ├── toolbox_registry.py
 │   ├── toolbox_prefetch.py
-│   └── toolbox_lnk.py
+│   ├── toolbox_lnk.py
+│   ├── toolbox_evtx.py
+│   └── toolbox_volatility.py
 ├── main.py                  # Entry point
-├── registry_mapping.py      # Configuration
+├── registry_mapping.py      # Registry keys configuration
+├── evtx_mapping.py          # Event IDs configuration
+├── volatility_mapping.py    # Volatility plugins configuration
 ├── pyproject.toml          # Package config
 ├── requirements.txt        # Dependencies
 ├── Makefile               # Build automation
@@ -204,6 +236,8 @@ ftb <file>
 forensic-toolbox evidence.lnk
 forensic-toolbox SOFTWARE --output results.json
 ftb CALC.EXE-12345.pf
+forensic-toolbox Security.evtx
+forensic-toolbox memory.raw  # Memory dump analysis (requires Volatility 3)
 ```
 
 ## Troubleshooting

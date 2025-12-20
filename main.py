@@ -18,7 +18,9 @@ from Toolbox.toolbox_evtx import ToolboxEvtx
 
 class ForensicToolbox:
     """Main forensic toolbox class for automatic artifact detection and parsing"""
-    
+
+    MEMORY_EXTENSIONS = {'.dmp', '.raw', '.mem', '.vmem', '.lime', '.dump', '.img', '.bin', '.dd'}
+
     REGISTRY_HIVES = {
         'SOFTWARE': 'SOFTWARE',
         'SYSTEM': 'SYSTEM',
@@ -57,13 +59,17 @@ class ForensicToolbox:
         
         # Check file extension
         ext = path.suffix.lower()
-        
+
+        # Check for memory dump extensions
+        if ext in self.MEMORY_EXTENSIONS:
+            return ('memory', None)
+
         if ext == '.lnk':
             return ('lnk', None)
-        
+
         if ext == '.pf':
             return ('prefetch', None)
-        
+
         if ext == '.evtx':
             return ('evtx', None)
         
@@ -95,11 +101,24 @@ class ForensicToolbox:
                 # Compressed prefetch (Windows 10+)
                 if signature[:3] == b'MAM':
                     return ('prefetch', None)
-        
+
+                # Memory dump signatures
+                # Windows crash dump
+                if signature[:8] in [b'PAGEDUMP', b'PAGEDU64', b'PAGEDU32']:
+                    return ('memory', 'windows_crashdump')
+
+                # Check for DU64 or DU32 patterns
+                if b'DU64' in signature or b'DU32' in signature:
+                    return ('memory', 'windows_crashdump')
+
+                # LiME format (Linux Memory Extractor)
+                if signature[:4] == b'EMiL':
+                    return ('memory', 'lime')
+
         except Exception as e:
             if self.verbose:
                 print(f"[!] Error reading file signature: {e}")
-        
+
         return ('unknown', None)
     
     def _guess_registry_type(self, path):
@@ -160,7 +179,7 @@ class ForensicToolbox:
         
         if file_type == 'unknown':
             print(f"[!] Unknown file type: {filepath}")
-            print("[!] Supported types: .lnk, .pf, registry hives")
+            print("[!] Supported types: .lnk, .pf, .evtx, registry hives, memory dumps")
             return False
         
         print(f"[*] Detected file type: {file_type.upper()}")
@@ -185,10 +204,13 @@ class ForensicToolbox:
             
             elif file_type == 'evtx':
                 self._process_evtx(filepath, args, is_directory=False)
-        
+
             elif file_type == 'evtx_dir':
                 self._process_evtx(filepath, args, is_directory=True)
-            
+
+            elif file_type == 'memory':
+                self._process_memory(filepath, args)
+
             print(f"\n{'='*70}")
             print("[+] Analysis complete!")
             print(f"{'='*70}\n")
@@ -330,41 +352,124 @@ class ForensicToolbox:
                 import traceback
                 traceback.print_exc()
 
+    def _process_memory(self, filepath, args):
+        """Process memory dump file with Volatility 3"""
+        try:
+            from Toolbox.toolbox_volatility import ToolboxVolatility
+
+            print(f"[*] Initializing Volatility 3 analysis...")
+
+            # Extract Volatility arguments
+            os_type = getattr(args, 'vol_os', None)
+            plugins = getattr(args, 'vol_plugins', None)
+            categories = getattr(args, 'vol_categories', None)
+            output_format = getattr(args, 'vol_format', 'json')
+            output_dir = getattr(args, 'vol_output_dir', None)
+            timeout = getattr(args, 'vol_timeout', 300)
+            priority_only = getattr(args, 'vol_priority_only', False)
+
+            # Initialize Volatility analyzer
+            vol = ToolboxVolatility(
+                filepath,
+                output_dir=output_dir,
+                os_type=os_type,
+                timeout=timeout
+            )
+
+            # Detect OS if not specified
+            if not os_type:
+                print(f"[*] Detecting operating system...")
+                detected_os = vol.detect_os()
+                print(f"[+] Detected OS: {detected_os}")
+
+                if detected_os == 'Unknown':
+                    print("[!] Could not auto-detect OS. Please specify with --vol-os")
+                    return
+
+            # Run appropriate analysis
+            if priority_only:
+                print(f"[*] Running priority plugins only...")
+                results = vol.run_priority_analysis(output_format=output_format)
+            elif plugins:
+                print(f"[*] Running specified plugins: {', '.join(plugins)}")
+                results = vol.run_specific_plugins(plugins, output_format=output_format)
+            else:
+                print(f"[*] Running comprehensive forensic analysis...")
+                results = vol.run_forensic_analysis(
+                    categories=categories,
+                    output_format=output_format
+                )
+
+            # Print and export summary
+            vol.print_summary()
+            summary_file = vol.output_dir / "analysis_summary.json"
+            vol.export_summary(str(summary_file))
+            print(f"[+] Analysis summary: {summary_file}")
+
+        except ImportError as e:
+            print("[!] Volatility 3 library not available")
+            print(f"[!] Error: {e}")
+            print("[*] Install with: pip install volatility3")
+            print("[*] You may also need: pip install pycryptodome yara-python capstone")
+        except Exception as e:
+            print(f"[!] Error during Volatility analysis: {e}")
+            if self.verbose:
+                import traceback
+                traceback.print_exc()
+
 
 def main():
     """Main entry point for the forensic toolbox"""
     parser = argparse.ArgumentParser(
-        description='Forensic Toolbox - Automatic Windows Forensic Artifacts Parser',
+        description='Forensic Toolbox - Automatic Forensic Artifacts Parser\n'
+                    'Supports: Registry, Prefetch, LNK, EVTX, and Memory Dumps',
         epilog='''
 Examples:
   # Automatically detect and parse any supported file
   forensic-toolbox evidence.lnk
   forensic-toolbox CALC.EXE-12345.pf
   forensic-toolbox SOFTWARE
-  
+
   # Specify registry type explicitly
   forensic-toolbox REGISTRY_FILE --type SOFTWARE
-  
+
   # Export results to file
   forensic-toolbox SOFTWARE --output results.json
   forensic-toolbox NTUSER.DAT --output user_activity.csv
-  
+
   # Process multiple files
   forensic-toolbox file1.lnk file2.pf NTUSER.DAT
-         # EVTX with date range
+
+  # EVTX with date range
   forensic-toolbox Security.evtx --evtx-start 2024-01-01 --evtx-end 2024-01-31
-  
+
   # EVTX specific event IDs
   forensic-toolbox Security.evtx --evtx-events 4624 4625 4688
-  
+
   # EVTX PowerShell commands
   forensic-toolbox PowerShell-Operational.evtx --evtx-powershell
-  
+
   # Parse EVTX directory
   forensic-toolbox C:\\logs --evtx-recursive --output timeline.json
-  
-  # Export results
-  forensic-toolbox SOFTWARE --output results.json
+
+  # Memory dump analysis (auto-detect OS and run all forensic plugins)
+  forensic-toolbox memory.dmp
+
+  # Memory dump with specific OS
+  forensic-toolbox memory.raw --vol-os Windows
+
+  # Memory dump with priority plugins only (fast analysis)
+  forensic-toolbox memory.vmem --vol-priority-only
+
+  # Memory dump with specific plugins
+  forensic-toolbox memory.dmp --vol-plugins windows.pslist.PsList windows.netscan.NetScan
+
+  # Memory dump with specific categories
+  forensic-toolbox memory.dmp --vol-categories processes network malware_indicators
+
+  # Memory dump with different output formats (default is text)
+  forensic-toolbox memory.dmp --vol-format json
+  forensic-toolbox memory.dmp --vol-format csv --vol-output-dir ./analysis
         ''',
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
@@ -457,7 +562,58 @@ Examples:
         metavar='N',
         help='Maximum number of events to display'
     )
-    
+
+    # Volatility-specific options
+    volatility_group = parser.add_argument_group('Volatility Options (for memory dumps only)')
+
+    volatility_group.add_argument(
+        '--vol-os',
+        choices=['Windows', 'Linux', 'Mac'],
+        metavar='OS',
+        help='Specify OS type (auto-detected if not provided): Windows, Linux, Mac'
+    )
+
+    volatility_group.add_argument(
+        '--vol-plugins',
+        nargs='+',
+        metavar='PLUGIN',
+        help='Specific plugins to run (e.g., windows.pslist.PsList windows.netscan.NetScan)'
+    )
+
+    volatility_group.add_argument(
+        '--vol-categories',
+        nargs='+',
+        metavar='CATEGORY',
+        help='Plugin categories to run. FAST: processes, network, registry, malware_indicators, system_info. SLOW: processes_scan, malware_scan, files'
+    )
+
+    volatility_group.add_argument(
+        '--vol-format',
+        choices=['text', 'json', 'csv', 'markdown'],
+        default='text',
+        help='Output format for Volatility plugins (default: text)'
+    )
+
+    volatility_group.add_argument(
+        '--vol-output-dir',
+        metavar='DIR',
+        help='Output directory for Volatility results (default: {image_name}_volatility_output)'
+    )
+
+    volatility_group.add_argument(
+        '--vol-timeout',
+        type=int,
+        default=300,
+        metavar='SECONDS',
+        help='Timeout for each plugin in seconds (default: 300)'
+    )
+
+    volatility_group.add_argument(
+        '--vol-priority-only',
+        action='store_true',
+        help='Run only priority plugins for fast analysis'
+    )
+
     args = parser.parse_args()
     
     # Initialize toolbox

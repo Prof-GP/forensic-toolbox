@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "forensic-toolbox"
 version = "1.0.0"
-description = "Windows Forensic Artifacts Parser - Registry, Prefetch, and LNK analysis"
+description = "Forensic Artifacts Parser - Registry, Prefetch, LNK, EVTX, and Memory Analysis"
 readme = "README.md"
 requires-python = ">=3.7"
 license = {text = "MIT"}
@@ -22,6 +22,9 @@ keywords = [
     "registry",
     "prefetch",
     "lnk",
+    "evtx",
+    "memory-analysis",
+    "volatility",
     "dfir"
 ]
 classifiers = [
@@ -43,6 +46,7 @@ classifiers = [
 
 dependencies = [
     "python-registry>=1.3.1",
+    "python-evtx>=0.8.0",
 ]
 
 [project.optional-dependencies]
@@ -62,9 +66,14 @@ evtx = [
     "python-evtx>=0.8.0",
 ]
 
+volatility = [
+    "volatility3>=2.5.0",
+]
+
 all = [
     "pyxpress>=0.1.0",
     "python-evtx>=0.8.0",
+    "volatility3>=2.5.0",
 ]
 
 [project.urls]

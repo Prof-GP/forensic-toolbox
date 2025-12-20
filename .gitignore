@@ -75,12 +75,26 @@ SAM
 SECURITY
 NTUSER.DAT
 UsrClass.dat
+*.evtx
+
+# Memory dumps (don't commit memory images)
+*.raw
+*.mem
+*.dmp
+*.vmem
+*.lime
+*.dump
+*.img
+*.bin
+*.dd
 
 # Output files
 *.json
 *.csv
+*.md
 results/
 output/
+*_volatility_output/
 
 # Logs
 *.log

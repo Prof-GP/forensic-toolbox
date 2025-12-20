@@ -5,3 +5,7 @@ python-evtx>=0.8.0
 # Optional: For Windows 10+ compressed prefetch files
 # Uncomment if you need to parse compressed prefetch files
 # pyxpress>=0.1.0
+
+# Note: Memory analysis requires Volatility 3 command-line tool (vol.exe or vol3)
+# Download from: https://github.com/volatilityfoundation/volatility3
+# Or install via: pip install volatility3

@@ -1,6 +1,6 @@
 # Forensic Toolbox
 
-A comprehensive Python toolkit for parsing Windows forensic artifacts including Registry hives, Prefetch files, and Windows shortcuts (.lnk files).
+A comprehensive Python toolkit for parsing forensic artifacts including Registry hives, Prefetch files, Windows shortcuts (.lnk files), Windows Event Logs (.evtx), and Memory Dumps. New tools added periodically
 
 ## Features
 
@@ -21,6 +21,13 @@ A comprehensive Python toolkit for parsing Windows forensic artifacts including 
   - Can individually parse powershell logs to see commands
   - Add your own Event IDs to Mappings or pass in command line
   - Output to Json and CSV
+- **Memory Analysis (NEW)**: Volatility 3 integration for memory dump analysis
+  - Auto-detects OS type (Windows, Linux, Mac)
+  - Runs curated forensically relevant plugins
+  - Categories: processes, network, files, registry, malware indicators, system info
+  - Output formats: text (default), JSON, CSV, markdown
+  - Separate file per plugin for easy analysis
+  - Timeout handling for long-running plugins
 
 ## Installation
 
@@ -80,8 +87,29 @@ forensic-toolbox file1.lnk file2.pf NTUSER.DAT
 # Enable verbose output
 forensic-toolbox evidence.lnk --verbose
 
+# EVTX parsing
 forensic-toolbox Security.evtx --evtx-event 4688
-forensic-toolbox C:\Logs 
+forensic-toolbox C:\Logs
+
+# Memory dump analysis (auto-detect OS and run all forensic plugins)
+forensic-toolbox memory.dmp
+
+# Memory dump with priority plugins only (RECOMMENDED for fast analysis)
+forensic-toolbox memory.vmem --vol-priority-only
+
+# Memory dump with specific plugins
+forensic-toolbox memory.raw --vol-plugins windows.pslist.PsList windows.netscan.NetScan
+
+# Memory dump with specific categories (FAST - excludes scanning plugins)
+forensic-toolbox memory.dmp --vol-categories processes network malware_indicators
+
+# Include scanning plugins (SLOW - can take 30+ minutes)
+forensic-toolbox memory.dmp --vol-categories processes processes_scan malware_scan
+
+# Output in different formats (default is text)
+forensic-toolbox memory.dmp --vol-format json     # JSON format
+forensic-toolbox memory.dmp --vol-format csv      # CSV format for spreadsheet tools
+forensic-toolbox memory.dmp --vol-format markdown # Markdown format for documentation
 ```
 
 ### Short Command
@@ -95,6 +123,7 @@ ftb SOFTWARE --output results.json
 from Toolbox.toolbox_registry import ToolboxRegistry
 from Toolbox.toolbox_prefetch import ToolboxPrefetch
 from Toolbox.toolbox_lnk import ToolboxLnk
+from Toolbox.toolbox_volatility import ToolboxVolatility
 
 # Parse registry hive
 reg = ToolboxRegistry('SOFTWARE', 'SOFTWARE')
@@ -108,6 +137,12 @@ with ToolboxPrefetch('CALC.EXE-12345.pf') as parser:
 
 # Parse LNK file
 lnk = ToolboxLnk('shortcut.lnk')
+
+# Analyze memory dump
+vol = ToolboxVolatility('memory.dmp')
+vol.detect_os()
+vol.run_forensic_analysis()
+vol.print_summary()
 ```
 
 ## Supported File Types
@@ -140,6 +175,39 @@ lnk = ToolboxLnk('shortcut.lnk')
 - Parse entire Logs directory and provides outputs
 - Look for Event ID via specfic dates
 
+### Memory Dumps
+
+#### Memory Acquisition Methods
+The toolbox accepts memory dumps from any source. **Recommended approach for VM analysis:**
+1. **Pause/Suspend the VM** - Creates a .vmem file with full memory state
+2. **Copy forensic artifacts to host** - Ensure all analysis files are extracted first
+3. **Analyze the .vmem file** - Use this toolbox on the paused VM's memory
+
+**Alternative methods** (not recommended):
+- Live memory dumping tools (may miss transient data)
+- Crash dumps (incomplete memory capture)
+
+#### Supported Formats
+- **Supported Formats**: .vmem, .raw, .mem, .dmp, .lime, .dump, .img, .bin, .dd
+- **Supported OS**: Windows, Linux, Mac (auto-detected)
+- **Plugin Categories**:
+  - **processes** (FAST): Process listings, trees, command lines, DLLs
+  - **processes_scan** (SLOW): Hidden process scanning - can take 30+ minutes
+  - **network**: Network connections, sockets, netstat
+  - **registry**: Registry hives, UserAssist, registry keys
+  - **files** (SLOW): File object scanning
+  - **malware_indicators** (FAST): Code injection detection, kernel callbacks, SSDT hooks
+  - **malware_scan** (SLOW): VAD analysis, driver scanning - can take 30+ minutes
+  - **system_info**: OS information, services, drivers
+- **Output**: Separate file per plugin (text, JSON, CSV, or markdown format)
+- **Features**: OS auto-detection, timeout handling, priority plugins for fast analysis
+
+**Performance Tips:**
+- Use `--vol-priority-only` for quick triage (completes in 1-5 minutes)
+- Use `--vol-categories processes network malware_indicators` for fast comprehensive analysis
+- Avoid `processes_scan`, `malware_scan`, and `files` categories unless you need deep scanning
+- Scanning plugins (psscan, modscan, driverscan, filescan) can take 10-60+ minutes on large dumps
+
 ## Development
 
 ### Running Tests
@@ -167,34 +235,41 @@ make check
 ```bash
 forensic-toolbox/
 ├── Toolbox/
-│   ├── init.py
+│   ├── __init__.py
 │   ├── toolbox_registry.py      # Registry hive parser
 │   ├── toolbox_prefetch.py      # Prefetch file parser
-│   └── toolbox_lnk.py           # LNK file parser
-│   └── toolbox_evtx.py           # Evtx parser
+│   ├── toolbox_lnk.py           # LNK file parser
+│   ├── toolbox_evtx.py          # EVTX parser
+│   └── toolbox_volatility.py    # Memory analysis (Volatility 3)
 ├── main.py                       # Main entry point
 ├── registry_mapping.py           # Forensic registry keys configuration
-├── evtx_mapping.py               # Forensic event id configuration
-├── pyproject.toml               # Package configuration
-├── requirements.txt             # Dependencies
-├── Makefile                     # Build automation
-└── README.md                    # This file
+├── evtx_mapping.py               # Forensic event ID configuration
+├── volatility_mapping.py         # Volatility plugins configuration
+├── pyproject.toml                # Package configuration
+├── requirements.txt              # Dependencies
+├── Makefile                      # Build automation
+└── README.md                     # This file
 ```
 
 ## Requirements
 
 - Python 3.7+
 - python-registry>=1.3.1
-- pyxpress>=0.1.0 (optional, for compressed prefetch files)
 - python-evtx>=0.8.0
+- pyxpress>=0.1.0 (optional, for compressed prefetch files)
+- **Volatility 3 command-line tool** (for memory analysis)
+  - Download from: https://github.com/volatilityfoundation/volatility3
+  - Ensure `vol.exe` or `vol3` is in your system PATH
+  - Alternative: `pip install volatility3` (then use `python -m volatility3`)
 
 ## Use Cases
 
-- **Digital Forensics**: Extract evidence from Windows systems
-- **Incident Response**: Analyze program execution and user activity
-- **Malware Analysis**: Identify persistence mechanisms and executed programs
+- **Digital Forensics**: Extract evidence from systems (Windows, Linux, Mac)
+- **Incident Response**: Analyze program execution, user activity, and live memory
+- **Malware Analysis**: Identify persistence mechanisms, code injection, and rootkits
 - **System Auditing**: Review installed software and system configuration
 - **Timeline Analysis**: Build execution timelines from multiple artifacts
+- **Memory Forensics**: Analyze memory dumps for running processes, network connections, and hidden malware
 
 ## Output Formats
 
@@ -251,6 +326,37 @@ Output includes:
 - Event Information for Analysis
 - Information if Event Count to large
 
+### Analyze Memory Dump
+```bash
+forensic-toolbox memory.dmp
+```
+
+Output includes:
+- OS detection results (Windows/Linux/Mac)
+- Separate output file per plugin in `memory_volatility_output/` directory
+- Analysis summary with plugin execution statistics
+- Plugin results in text format (or JSON/CSV/markdown with --vol-format):
+  - Process listings and trees (pslist, pstree)
+  - Network connections (netscan, netstat)
+  - Command line arguments (cmdline)
+  - Loaded DLLs and modules
+  - File objects in memory
+  - Malware indicators (malfind, vadinfo)
+  - Registry hive locations
+  - And many more forensically relevant artifacts
+
+Example output structure:
+```
+memory_volatility_output/
+├── analysis_summary.json
+├── windows_info_Info.txt
+├── windows_pslist_PsList.txt
+├── windows_pstree_PsTree.txt
+├── windows_netscan_NetScan.txt
+├── windows_cmdline_CmdLine.txt
+└── ...
+```
+
 ## License
 
 MIT License - See LICENSE file for details
@@ -266,6 +372,8 @@ Prof-GP - practical4n6@gmail.com
 ## Acknowledgments
 
 - python-registry library by Willi Ballenthin
+- python-evtx library for EVTX parsing
+- Volatility Foundation for Volatility 3 framework
 - Microsoft documentation on Windows file formats
 - Digital forensics community
 

@@ -2,8 +2,8 @@
 theme: jekyll-theme-minimal
 
 # Project Branding
-title: "🕵️ Forensic-Toolbox"
-description: "A comprehensive suite for parsing Windows Registry, Prefetch, and Event Log artifacts."
+title: "Forensic-Toolbox"
+description: "A comprehensive suite for parsing Windows artifacts and Memory Analysis."
 logo: /assets/logo.png    # This points to your image file
 
 # UI Hidden Gems

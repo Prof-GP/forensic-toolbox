@@ -1,0 +1,26 @@
+---
+---
+@import "{{ site.theme }}";
+
+// Forensic Theme Colors
+$header-color: #d32f2f;       // Blood Red
+$link-color: #b71c1c;         // Darker Red
+$text-color: #ffffff;         // White text
+$bg-color: #000000;           // Pitch Black
+
+body {
+  background-color: $bg-color;
+  color: $text-color;
+}
+
+header {
+  color: $header-color;
+  h1 { color: $header-color; }
+}
+
+a { color: $link-color; }
+
+// Makes the sidebar/header look distinct
+.wrapper {
+  background-color: #000000;
+}

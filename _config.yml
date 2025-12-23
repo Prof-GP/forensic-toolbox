@@ -1,2 +1,20 @@
-title: Forensic Toolbox
-theme: jekyll-theme-cayman
+# Theme Selection
+theme: jekyll-theme-minimal
+
+# Project Branding
+title: "🕵️ Forensic-Toolbox"
+description: "A comprehensive suite for parsing Windows Registry, Prefetch, and Event Log artifacts."
+logo: /assets/logo.png    # This points to your image file
+
+# UI Hidden Gems
+show_downloads: true       # Creates 'Download ZIP' and 'View on GitHub' buttons
+google_analytics:          # Leave blank for now, or add your ID (e.g., UA-XXXXX-X)
+
+# Repository Metadata
+github:
+  is_project_page: true
+  repository_url: "https://github.com/Prof-GP/forensic-toolbox"
+
+# Markdown Settings
+kramdown:
+  input: GFM                # Ensures GitHub Flavored Markdown (tables, task lists) works perfectly

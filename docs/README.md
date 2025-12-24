@@ -7,8 +7,8 @@
 </p>
 
 <div align="center">
-  ![Issues](https://img.shields.io/github/issues/Prof-GP/forensic-toolbox?color=d32f2f)
-  ![Stars](https://img.shields.io/github/stars/Prof-GP/forensic-toolbox?style=social)
+  [![Issues](https://img.shields.io/github/issues/Prof-GP/forensic-toolbox?color=d32f2f)](https://github.com/Prof-GP/forensic-toolbox/issues)
+  [![Stars](https://img.shields.io/github/stars/Prof-GP/forensic-toolbox?style=social)](https://github.com/Prof-GP/forensic-toolbox/stargazers)
 </div>
   
 <p align="center">

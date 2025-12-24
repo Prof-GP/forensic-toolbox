@@ -6,7 +6,7 @@
   <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20Mac-lightgrey?style=for-the-badge" alt="Platform">
 </p>
 
-<p slign="center">
+<p align="center">
   ![Issues](https://img.shields.io/github/issues/Prof-GP/forensic-toolbox?color=d32f2f)
   ![Stars](https://img.shields.io/github/stars/Prof-GP/forensic-toolbox?style=social)
 </p>

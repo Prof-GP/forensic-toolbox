@@ -15,7 +15,7 @@ github:
   is_project_page: true
   repository_url: "https://github.com/Prof-GP/forensic-toolbox"
 
-links:
+page_headers:
   - name: LinkedIn
     url: https://www.linkedin.com/in/raymond-gp/
   - name: Report a Bug

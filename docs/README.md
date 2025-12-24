@@ -10,15 +10,6 @@
   [![Issues](https://img.shields.io/github/issues/Prof-GP/forensic-toolbox?color=d32f2f)](https://github.com/Prof-GP/forensic-toolbox/issues)
   [![Stars](https://img.shields.io/github/stars/Prof-GP/forensic-toolbox?style=social)](https://github.com/Prof-GP/forensic-toolbox/stargazers)
 </div>
-  
-<p align="center">
-  <strong>A comprehensive Python toolkit for digital forensics and incident response</strong>
-</p>
-
-<p align="center">
-  Parse forensic artifacts including Registry hives, Prefetch files, Windows shortcuts (.lnk), Event Logs (.evtx), and Memory Dumps with ease.
-</p>
-
 ---
 
 ## ✨ Features

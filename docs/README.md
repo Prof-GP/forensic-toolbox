@@ -5,8 +5,6 @@
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License">
   <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20Mac-lightgrey?style=for-the-badge" alt="Platform">
 </p>
-
-
   [![Issues](https://img.shields.io/github/issues/Prof-GP/forensic-toolbox?color=d32f2f)](https://github.com/Prof-GP/forensic-toolbox/issues)
   [![Stars](https://img.shields.io/github/stars/Prof-GP/forensic-toolbox?style=social)](https://github.com/Prof-GP/forensic-toolbox/stargazers)
 </div>

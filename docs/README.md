@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/Python-3.7%2B-blue?style=for-the-badge&logo=python&logoColor=white" alt="Python">
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License">
   <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20Mac-lightgrey?style=for-the-badge" alt="Platform">
-</p>
+<\p>
 
 <p slign="center">
 ![Issues](https://img.shields.io/github/issues/Prof-GP/forensic-toolbox?color=d32f2f)

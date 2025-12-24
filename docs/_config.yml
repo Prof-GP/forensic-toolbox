@@ -15,6 +15,14 @@ github:
   is_project_page: true
   repository_url: "https://github.com/Prof-GP/forensic-toolbox"
 
+links:
+  - name: LinkedIn
+    url: https://www.linkedin.com/in/raymond-gp/
+  - name: Report a Bug
+    url: https://github.com/Prof-GP/forensic-toolbox/issues
+  - name: Forensic Documentation
+    url: https://theforensicsway.com
+
 # Markdown Settings
 kramdown:
   input: GFM                # Ensures GitHub Flavored Markdown (tables, task lists) works perfectly

@@ -1,5 +1,4 @@
-<div align="center">
-  # 🔍 Forensic Toolbox
+# 🔍 Forensic Toolbox
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.7%2B-blue?style=for-the-badge&logo=python&logoColor=white" alt="Python">
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License">
@@ -7,7 +6,6 @@
 </p>
   [![Issues](https://img.shields.io/github/issues/Prof-GP/forensic-toolbox?color=d32f2f)](https://github.com/Prof-GP/forensic-toolbox/issues)
   [![Stars](https://img.shields.io/github/stars/Prof-GP/forensic-toolbox?style=social)](https://github.com/Prof-GP/forensic-toolbox/stargazers)
-</div>
 ---
 
 ## ✨ Features

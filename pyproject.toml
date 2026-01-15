@@ -47,6 +47,7 @@ classifiers = [
 dependencies = [
     "python-registry>=1.3.1",
     "python-evtx>=0.8.0",
+    "windowsprefetch>=4.0.3",
 ]
 
 [project.optional-dependencies]
@@ -60,6 +61,7 @@ dev = [
 
 prefetch = [
     "pyxpress>=0.1.0",
+    "windowsprefetch>=4.0.3",
 ]
 
 evtx = [
@@ -74,6 +76,7 @@ all = [
     "pyxpress>=0.1.0",
     "python-evtx>=0.8.0",
     "volatility3>=2.5.0",
+    "windowsprefetch>=4.0.3",
 ]
 
 [project.urls]

@@ -257,6 +257,7 @@ forensic-toolbox/
 - python-registry>=1.3.1
 - python-evtx>=0.8.0
 - pyxpress>=0.1.0 (optional, for compressed prefetch files)
+- windowsprefetch>=4.0.3
 - **Volatility 3 command-line tool** (for memory analysis)
   - Download from: https://github.com/volatilityfoundation/volatility3
   - Ensure `vol.exe` or `vol3` is in your system PATH

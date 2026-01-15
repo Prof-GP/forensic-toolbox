@@ -204,21 +204,25 @@ class ToolboxPrefetch:
             return decompressor.decompress(self.filepath)
         except ImportError:
             pass
-
+        
+        # Skip MAM header (8 bytes)
+        compressed_data = data[8:]
         # Try using pyxpress-huffman
+
         try:
-            import pyxpress
-            # Skip MAM header (8 bytes)
+            import lzxpress
+            # The header format is: 
+            # [0:4] Signature 'MAM\x04'
+            # [4:8] Uncompressed Size (Little Endian)
+            uncompressed_size = struct.unpack("<I", data[4:8])[0]
             compressed_data = data[8:]
-            # Decompress
-            decompressed = pyxpress.decompress(compressed_data)
-            return decompressed
+
+            return lzxpress.decompress(compressed_data, uncompressed_size)
         except ImportError:
-            print("Warning: No decompression library available")
-            print("Install: pip install pyxpress")
-
-        raise Exception("Cannot decompress - no decompression library available")
-
+            raise Exception("Decompression failed: Run 'pip install lzxpress'")
+        except Exception as e:
+            raise Exception(f"MAM Decompression error: {e}")
+        
     def _parse_header(self) -> bool:
         """Parse prefetch file header"""
         if len(self._decompressed_data) < 84:
